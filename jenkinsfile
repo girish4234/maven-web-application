@@ -1,0 +1,30 @@
+node {
+    stage ("checkout")
+    {
+        git credentialsId: 'c01cfb4d-3115-4579-86b2-6302eedd0112', url: 'https://github.com/girish4234/maven-web-application.git'
+
+    }
+    stage ("maven")
+    {
+        sh ("mvn package")
+    }
+    stage ("sonar")
+    {
+        sh ("mvn sonar:sonar")
+    }
+    stage ("nexus")
+    {
+        sh ("mvn deploy")
+    }
+    stage ("tomcat")
+    {
+        sh ("cp /root/.jenkins/workspace/mavenpipe/target/*.war /opt/apache-tomcat-9.0.13/webapps")
+    }
+    stage ("email"){
+        mail bcc: '', body: '''regrds 
+girish''', cc: 'girishvitsece@gmail.com', from: '', replyTo: '', subject: 'mavenpipeline', to: 'girish4yu@gmail.com'
+
+
+    }
+    
+}
